@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Basic Library Online Course (1/2026) - စာရင်းစစ်ဆေးရန်</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Padauk:wght@400;700&display=swap');
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Padauk', sans-serif;
+        }
+
+        body {
+            background-color: #e3f2fd;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: min-content;
+            min-height: 100vh;
+            padding: 20px 15px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+            max-width: 500px;
+        }
+
+        .header h1 {
+            color: #0d47a1;
+            font-size: 24px;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .header h2 {
+            color: #1565c0;
+            font-size: 20px;
+            margin-bottom: 5px;
+        }
+
+        .header h3 {
+            color: #e65100;
+            font-size: 16px;
+            background-color: #fff3e0;
+            padding: 5px 10px;
+            border-radius: 5px;
+            display: inline-block;
+        }
+
+        .search-container {
+            background-color: #90caf9;
+            border-radius: 12px;
+            padding: 25px;
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 16px;
+            font-weight: bold;
+            color: #0d47a1;
+            margin-bottom: 8px;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 16px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        /* Input Focus Glow Shade Effect */
+        .form-group input:focus {
+            border-color: #2196f3;
+            box-shadow: 0 0 10px rgba(33, 150, 243, 0.5);
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 12px;
+            background-color: #f5f5f5;
+            border: 1px solid #b0bec5;
+            border-radius: 6px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            cursor: pointer;
+            margin-top: 5px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-submit:hover { background-color: #e0e0e0; }
+
+        .result-container {
+            width: 100%;
+            max-width: 450px;
+            display: none;
+            margin-bottom: 25px;
+        }
+
+        .result-card {
+            background-color: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            border-top: 6px solid #4caf50;
+        }
+
+        .result-card.not-selected { border-top-color: #f44336; }
+
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px dashed #e0e0e0;
+        }
+
+        .result-row:last-child { border-bottom: none; }
+
+        .result-label { font-weight: bold; color: #666; }
+        .result-value { font-weight: bold; color: #111; }
+
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            color: white;
+        }
+
+        .status-selected { background-color: #4caf50; }
+        .status-waiting { background-color: #ff9800; }
+
+        /* Beautiful Admin Login Modal (Overlay) */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 999;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-box {
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 380px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            text-align: center;
+            transform: translateY(-30px);
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.active .modal-box {
+            transform: translateY(0);
+        }
+
+        .modal-box h3 {
+            color: #0d47a1;
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+
+        /* Beautiful Input Oval Shade for Admin Password */
+        .admin-input {
+            width: 100%;
+            padding: 12px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 25px; /* Oval Shape */
+            font-size: 16px;
+            outline: none;
+            margin-bottom: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .admin-input:focus {
+            border-color: #0d47a1;
+            box-shadow: 0 0 12px rgba(13, 71, 161, 0.4); /* Oval Shade Effect */
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-modal {
+            flex: 1;
+            padding: 10px;
+            border-radius: 20px;
+            border: none;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .btn-confirm { background-color: #0d47a1; color: white; }
+        .btn-cancel { background-color: #e0e0e0; color: #333; }
+
+        /* Admin Dashboard Section */
+        .admin-section {
+            width: 100%;
+            max-width: 500px;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            display: none;
+            margin-bottom: 25px;
+        }
+
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+
+        .admin-table th, .admin-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        .admin-table th { background-color: #0d47a1; color: white; }
+
+        .footer-info {
+            text-align: center;
+            max-width: 450px;
+            font-size: 14px;
+            color: #555;
+            line-height: 1.6;
+            background: rgba(255, 255, 255, 0.6);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #bbdefb;
+            margin-bottom: 20px;
+        }
+
+        .footer-info a { color: #0d47a1; text-decoration: none; font-weight: bold; }
+
+        .admin-toggle {
+            font-size: 14px;
+            color: #0d47a1;
+            cursor: pointer;
+            text-decoration: underline;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>မြန်မာနိုင်ငံစာကြည့်တိုက်အသင်း</h1>
+        <h2>Basic Library Online Course (1/2026)</h2>
+        <h3>လျှောက်လွှာတင်သူများစာရင်း စစ်ဆေးခြင်း</h3>
+    </div>
+
+    <div class="search-container" id="searchPanel">
+        <div class="form-group">
+            <label for="inputNo">စဉ်နံပါတ် (No.)</label>
+            <input type="text" id="inputNo" placeholder="ဥပမာ - ၁ သို့မဟုတ် 1">
+        </div>
+        <div class="form-group">
+            <label for="inputName">အမည် (Name)</label>
+            <input type="text" id="inputName" placeholder="ဥပမာ - Ashin Thar Ga Ra">
+        </div>
+        <button class="btn-submit" onclick="checkResult()">စစ်ဆေးမည်</button>
+    </div>
+
+    <div class="result-container" id="resultContainer"></div>
+
+    <div class="admin-section" id="adminPanel">
+        <h3 style="color: #0d47a1; margin-bottom: 10px;">Admin Dashboard (ပြင်ဆင်ရန်နေရာ)</h3>
+        <button class="btn-submit" style="background-color: #f44336; color: white; padding: 5px; font-size: 14px; border:none;" onclick="logoutAdmin()">Admin မှ ပြန်ထွက်မည်</button>
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>No.</th>
+                    <th>Name</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody id="adminTableBody"></tbody>
+        </table>
+    </div>
+
+    <div class="footer-info">
+        📌 <strong>သတိပြုရန် -</strong> ယခုစာရင်းတွင် လျှောက်လွှာတင်ထားပြီး အမည်မပါဝင်ပါက ဖုန်း <strong><a href="tel:09450627226">09450627226</a></strong> သို့ အကြောင်းကြားနိုင်ပါသည်။<br>
+        💡 သင်တန်းမတက်ရောက်ဖြစ်ပါက <strong>ဇူလိုင် ၁ ရက်နေ့</strong> ကြိုတင်အကြောင်းကြားပေးပါရန်။
+    </div>
+
+    <div class="admin-toggle" onclick="openAdminModal()">🔒 Admin Login</div>
+
+    <div class="modal-overlay" id="adminModal">
+        <div class="modal-box">
+            <h3>🔒 Admin Verification</h3>
+            <input type="password" id="adminPassword" class="admin-input" placeholder="စကားဝှက် (Password) ရိုက်ထည့်ပါ">
+            <div class="modal-buttons">
+                <button class="btn-modal btn-cancel" onclick="closeAdminModal()">ပိတ်မည်</button>
+                <button class="btn-modal btn-confirm" onclick="verifyAdminPassword()">ဝင်မည်</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data Configuration
+        const defaultApplicants = [
+            { no: 1, name: "Ashin Thar Ga Ra", status: "Selected" },
+            { no: 2, name: "Aung Ling", status: "Selected" },
+            { no: 3, name: "AYE SANDAR MYO", status: "Selected" },
+            { no: 4, name: "Aye Thein", status: "Selected" },
+            { no: 5, name: "Benjamin Van Hum Lian Mang", status: "Selected" },
+            { no: 6, name: "Cing Khan Ciang", status: "Selected" },
+            { no: 7, name: "Hla Kyin May", status: "Selected" },
+            { no: 8, name: "Hsu Myat Noe Htet", status: "Selected" },
+            { no: 9, name: "Htar Htar Shwe", status: "Selected" },
+            { no: 10, name: "Htet Htet Hlaing", status: "Selected" },
+            { no: 11, name: "Htet Wai", status: "Selected" },
+            { no: 12, name: "Jue Jue Zin Thaw", status: "Selected" },
+            { no: 13, name: "Khant Hpone Chit", status: "Selected" },
+            { no: 14, name: "Khin Lay Nwe", status: "Selected" },
+            { no: 15, name: "Khin Mar Lwin", status: "Selected" },
+            { no: 16, name: "Khin Su Hlaing", status: "Selected" },
+            { no: 17, name: "Khin Thandar Soe", status: "Selected" },
+            { no: 18, name: "Khin Yupar Aye", status: "Selected" },
+            { no: 19, name: "Khine Zar Chi Htet", status: "Selected" },
+            { no: 20, name: "Kwee Bu", status: "Selected" },
+            { no: 21, name: "Laura", status: "Selected" },
+            { no: 22, name: "LB Daung Khaung", status: "Selected" },
+            { no: 23, name: "Manaw Cho", status: "Selected" },
+            { no: 24, name: "May Me Chit", status: "Selected" },
+            { no: 25, name: "May Zin Phyu", status: "Selected" },
+            { no: 26, name: "Moh Moh Chit", status: "Selected" },
+            { no: 27, name: "Myat Kay Khaing", status: "Selected" },
+            { no: 28, name: "Nan Aye Nyein Aung", status: "Selected" },
+            { no: 29, name: "Nan Phyo Ma Ma Sai", status: "Selected" },
+            { no: 30, name: "Nang San Moon", status: "Selected" },
+            { no: 31, name: "Nant Zin Moe Aung", status: "Selected" },
+            { no: 32, name: "Naw Ei Ei Tun", status: "Selected" },
+            { no: 33, name: "Naw Mee Lay", status: "Selected" },
+            { no: 34, name: "Naw Seinn Mar Mar Tun", status: "Selected" },
+            { no: 35, name: "Naw Tha Blay Paw", status: "Selected" },
+            { no: 36, name: "Nay Chi Htun", status: "Waiting" },
+            { no: 37, name: "Nu Nu Win", status: "Waiting" },
+            { no: 38, name: "Nyein Nyein Mon", status: "Waiting" },
+            { no: 39, name: "Paing Soe Thu", status: "Waiting" },
+            { no: 40, name: "Phone Myat Min", status: "Waiting" },
+            { no: 41, name: "Phoo Pyae Pyae Aung", status: "Waiting" },
+            { no: 42, name: "PHYO MIN KHAING", status: "Waiting" },
+            { no: 43, name: "Pyae Pyae Khaing", status: "Waiting" },
+            { no: 44, name: "Sarmari", status: "Waiting" },
+            { no: 45, name: "Saw Aung Naing Soe", status: "Waiting" },
+            { no: 46, name: "Saw Thandar Oo", status: "Waiting" },
+            { no: 47, name: "Soe Thura Min", status: "Waiting" },
+            { no: 48, name: "Thinn Yanat Aung", status: "Waiting" },
+            { no: 49, name: "Tin Ko Min", status: "Waiting" },
+            { no: 50, name: "Tin Saw Than", status: "Waiting" },
+            { no: 51, name: "Wu Li Sar", status: "Waiting" },
+            { no: 52, name: "Yan Naing Lin", status: "Waiting" },
+            { no: 53, name: "Ye Swam Yee", status: "Waiting" },
+            { no: 54, name: "Yin Yin Oo", status: "Waiting" },
+            { no: 55, name: "Yu Yu Hlaing", status: "Waiting" },
+            { no: 56, name: "Zaw Htet Aung", status: "Waiting" },
+            { no: 57, name: "Zin Zin Zaw", status: "Waiting" }
+        ];
+
+        let applicantsData = JSON.parse(localStorage.getItem('applicantsData')) || defaultApplicants;
+
+        function convertMmToEnNumbers(str) {
+            const mmDigits = ['၀', '၁', '၂', '၃', '၄', '၅', '၆', '၇', '၈', '၉'];
+            return str.replace(/[၀-၉]/g, w => mmDigits.indexOf(w));
+        }
+
+        function checkResult() {
+            let inputNo = convertMmToEnNumbers(document.getElementById('inputNo').value.trim());
+            let inputName = document.getElementById('inputName').value.trim().toLowerCase();
+            const resultContainer = document.getElementById('resultContainer');
+            
+            if (!inputNo && !inputName) {
+                alert("ကျေးဇူးပြု၍ စဉ်နံပါတ် (သို့မဟုတ်) အမည် ထည့်သွင်းပါ။");
+                return;
+            }
+
+            let match = inputNo ? applicantsData.find(item => item.no == inputNo) : applicantsData.find(item => item.name.toLowerCase().includes(inputName));
+            resultContainer.style.display = 'block';
+
+            if (match) {
+                const isSelected = match.status === "Selected";
+                resultContainer.innerHTML = `
+                    <div class="result-card ${isSelected ? '' : 'not-selected'}">
+                        <div class="result-row"><span class="result-label">No.</span><span class="result-value">${match.no}</span></div>
+                        <div class="result-row"><span class="result-label">အမည်</span><span class="result-value">${match.name}</span></div>
+                        <div class="result-row"><span class="result-label">အခြေအနေ</span>
+                        <span class="status-badge ${isSelected ? 'status-selected' : 'status-waiting'}">${isSelected ? 'သင်တန်းတက်ရောက်ခွင့်ရရှိသူ' : 'အရန်စာရင်း (Waiting)'}</span></div>
+                    </div>`;
+            } else {
+                resultContainer.innerHTML = `<div class="result-card not-selected" style="text-align:center; color:red;">⚠️ ရှာဖွေမှုမတွေ့ရှိပါ။</div>`;
+            }
+        }
+
+        // Beautiful Overlay Modal Logics
+        function openAdminModal() {
+            document.getElementById('adminPassword').value = '';
+            document.getElementById('adminModal').classList.add('active');
+            setTimeout(() => document.getElementById('adminPassword').focus(), 300);
+        }
+
+        function closeAdminModal() {
+            document.getElementById('adminModal').classList.remove('active');
+        }
+
+        function verifyAdminPassword() {
+            const pass = document.getElementById('adminPassword').value;
+            if (pass === "admin1234") {
+                closeAdminModal();
+                document.getElementById('searchPanel').style.display = 'none';
+                document.getElementById('resultContainer').style.display = 'none';
+                document.getElementById('adminPanel').style.display = 'block';
+                renderAdminTable();
+            } else {
+                alert("စကားဝှက် မှားယွင်းနေပါသည်။");
+            }
+        }
+
+        function logoutAdmin() {
+            document.getElementById('adminPanel').style.display = 'none';
+            document.getElementById('searchPanel').style.display = 'block';
+        }
+
+        function renderAdminTable() {
+            const tbody = document.getElementById('adminTableBody');
+            tbody.innerHTML = "";
+            applicantsData.forEach((item, index) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${item.no}</td>
+                    <td>${item.name}</td>
+                    <td>
+                        <select onchange="updateStatus(${index}, this.value)" style="padding: 4px; border-radius: 4px;">
+                            <option value="Selected" ${item.status === 'Selected' ? 'selected' : ''}>Selected</option>
+                            <option value="Waiting" ${item.status === 'Waiting' ? 'selected' : ''}>Waiting</option>
+                        </select>
+                    </td>`;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function updateStatus(index, newStatus) {
+            applicantsData[index].status = newStatus;
+            localStorage.setItem('applicantsData', JSON.stringify(applicantsData));
+        }
+
+        // Enter key listeners for easy submission
+        document.getElementById('adminPassword').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') verifyAdminPassword();
+        });
+    </script>
+</body>
+</html>
